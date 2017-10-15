@@ -1,15 +1,14 @@
 package com.aatishrana.almamatersample.pojo.subject;
 
 /**
- * Created by Aatish on 10/10/2017.
+ * Created by Aatish on 10/15/2017.
  */
 
-public class Biology implements Subject
+public class Hindi implements Subject
 {
-
     private int id;
 
-    public Biology(int id)
+    public Hindi(int id)
     {
         this.id = id;
     }
@@ -17,19 +16,19 @@ public class Biology implements Subject
     @Override
     public int getId()
     {
-        return 2;
+        return this.id;
     }
 
     @Override
     public String getName()
     {
-        return "Biology";
+        return "Hindi";
     }
 
     @Override
     public String toString()
     {
-        return "Biology";
+        return "Hindi";
     }
 
     @Override
@@ -38,9 +37,9 @@ public class Biology implements Subject
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Biology biology = (Biology) o;
+        Hindi hindi = (Hindi) o;
 
-        return id == biology.id;
+        return id == hindi.id;
 
     }
 

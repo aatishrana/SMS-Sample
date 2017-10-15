@@ -1,14 +1,14 @@
 package com.aatishrana.almamatersample.pojo.subject;
 
 /**
- * Created by Aatish on 10/10/2017.
+ * Created by Aatish on 10/15/2017.
  */
 
-public class Math implements Subject
+public class English implements Subject
 {
     private int id;
 
-    public Math(int id)
+    public English(int id)
     {
         this.id = id;
     }
@@ -22,13 +22,13 @@ public class Math implements Subject
     @Override
     public String getName()
     {
-        return "Maths";
+        return "English";
     }
 
     @Override
     public String toString()
     {
-        return "Math";
+        return "English";
     }
 
     @Override
@@ -37,9 +37,9 @@ public class Math implements Subject
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Math math = (Math) o;
+        English english = (English) o;
 
-        return id == math.id;
+        return id == english.id;
 
     }
 

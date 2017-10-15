@@ -2,6 +2,7 @@ package com.aatishrana.almamatersample.pojo;
 
 import com.aatishrana.almamatersample.pojo.subject.Subject;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,6 +20,14 @@ public class Teacher
         this.id = id;
         this.name = name;
         this.subjects = subjects;
+    }
+
+    public Teacher(int id, String name, Subject subject)
+    {
+        this.id = id;
+        this.name = name;
+        this.subjects = new HashSet<>();
+        this.subjects.add(subject);
     }
 
     public int getId()

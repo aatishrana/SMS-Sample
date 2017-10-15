@@ -4,12 +4,12 @@ package com.aatishrana.almamatersample.pojo.subject;
  * Created by Aatish on 10/10/2017.
  */
 
-public class History implements Subject
+public class SocialScience implements Subject
 {
 
     private int id;
 
-    public History(int id)
+    public SocialScience(int id)
     {
         this.id = id;
     }
@@ -23,13 +23,13 @@ public class History implements Subject
     @Override
     public String getName()
     {
-        return "History";
+        return "SocialScience";
     }
 
     @Override
     public String toString()
     {
-        return "History";
+        return "SocialScience";
     }
 
     @Override
@@ -38,9 +38,9 @@ public class History implements Subject
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        History history = (History) o;
+        SocialScience socialScience = (SocialScience) o;
 
-        return id == history.id;
+        return id == socialScience.id;
 
     }
 
