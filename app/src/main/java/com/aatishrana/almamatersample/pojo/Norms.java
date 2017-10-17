@@ -16,15 +16,18 @@ public class Norms
     private int standard;
     private Subject subject;
     private int noOfLectures;
-    private int perDays;
 
-    public Norms(int id, int standard, Subject subject, int noOfLectures, int perDays)
+    public Norms(int id, int standard, Subject subject, int noOfLectures)
     {
         this.id = id;
         this.standard = standard;
         this.subject = subject;
         this.noOfLectures = noOfLectures;
-        this.perDays = perDays;
+    }
+
+    public int getId()
+    {
+        return id;
     }
 
     public int getStandard()
@@ -42,8 +45,38 @@ public class Norms
         return noOfLectures;
     }
 
-    public int getPerDays()
+    @Override
+    public String toString()
     {
-        return perDays;
+        return "Norms{" +
+                "standard=" + standard +
+                ", subject=" + subject +
+                ", noOfLectures=" + noOfLectures +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Norms norms = (Norms) o;
+
+        if (id != norms.id) return false;
+        if (standard != norms.standard) return false;
+        if (noOfLectures != norms.noOfLectures) return false;
+        return subject != null ? subject.equals(norms.subject) : norms.subject == null;
+
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = id;
+        result = 31 * result + standard;
+        result = 31 * result + (subject != null ? subject.hashCode() : 0);
+        result = 31 * result + noOfLectures;
+        return result;
     }
 }

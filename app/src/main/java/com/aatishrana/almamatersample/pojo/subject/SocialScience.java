@@ -17,7 +17,7 @@ public class SocialScience implements Subject
     @Override
     public int getId()
     {
-        return 1;
+        return this.id;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class Science implements Subject
     @Override
     public int getId()
     {
-        return 2;
+        return this.id;
     }
 
     @Override

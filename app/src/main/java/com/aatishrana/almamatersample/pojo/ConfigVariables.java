@@ -8,11 +8,40 @@ package com.aatishrana.almamatersample.pojo;
  */
 public class ConfigVariables
 {
+    /**
+     * maxContinuity describes the number of maximum lectures that can be assigned
+     * to a teacher continuously i:e  with out a break, in a particular day.
+     * eg:- maxContinuity=2, 1st lecture is assigned, 2nd is assigned, 3rd has to be a free lecture
+     */
     private int maxContinuity;
+
+    /**
+     * minFreeLectures describes the number of lectures that must be given free in a particular day
+     */
     private int minFreeLectures;
+
+    /**
+     * carryOverClassIncharge describes whether of not the class InCharge of a student group
+     * must be set as class InCharge of that same student group in the next session
+     */
     private boolean carryOverClassIncharge;
+
+    /**
+     * delegateToNonSubjectTeacher will define if in the event of a shortage of teachers while
+     * creating the timetable, whether that subject's teaching should be allotted to a teacher
+     * of different subject
+     */
     private boolean delegateToNonSubjectTeacher;
+
+    /**
+     * noOfLectureInADay defines how many lectures are going to be in a day
+     */
     private int noOfLecturesInADay;
+
+    /**
+     * noOfDays there will be classes
+     */
+    private int noOfWorkWeek;
 
     public ConfigVariables()
     {
@@ -21,6 +50,7 @@ public class ConfigVariables
         this.carryOverClassIncharge = true;
         this.delegateToNonSubjectTeacher = true;
         this.noOfLecturesInADay = 6;
+        this.noOfWorkWeek = 6;
     }
 
     public void setMaxContinuity(int maxContinuity)
@@ -48,6 +78,11 @@ public class ConfigVariables
         this.delegateToNonSubjectTeacher = delegateToNonSubjectTeacher;
     }
 
+    public void setNoOfWorkWeek(int noOfWorkWeek)
+    {
+        this.noOfWorkWeek = noOfWorkWeek;
+    }
+
     public int getMaxContinuity()
     {
         return maxContinuity;
@@ -58,7 +93,7 @@ public class ConfigVariables
         return minFreeLectures;
     }
 
-    public boolean isCarryOverClassIncharge()
+    public boolean getCarryOverClassIncharge()
     {
         return carryOverClassIncharge;
     }
@@ -71,5 +106,10 @@ public class ConfigVariables
     public int getNoOfLecturesInADay()
     {
         return noOfLecturesInADay;
+    }
+
+    public int getNoOfWorkWeek()
+    {
+        return noOfWorkWeek;
     }
 }
