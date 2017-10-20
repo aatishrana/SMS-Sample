@@ -93,7 +93,7 @@ public class ConfigVariables
         return minFreeLectures;
     }
 
-    public boolean getCarryOverClassIncharge()
+    public boolean isCarryOverClassIncharge()
     {
         return carryOverClassIncharge;
     }

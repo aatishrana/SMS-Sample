@@ -4,11 +4,17 @@ import com.aatishrana.almamatersample.data.MasterDataRepository;
 import com.aatishrana.almamatersample.pojo.ConfigVariables;
 import com.aatishrana.almamatersample.pojo.Norms;
 import com.aatishrana.almamatersample.pojo.Standard;
+import com.aatishrana.almamatersample.pojo.SubjectTeacher;
 import com.aatishrana.almamatersample.pojo.subject.Subject;
 import com.aatishrana.almamatersample.pojo.Teacher;
+import com.aatishrana.almamatersample.pojo.timetable.TimeTable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 /**
@@ -37,6 +43,10 @@ public class TimeTableGenerator
         loadAssigningCheck(totalLoad, configVariables);
 
         //start creating time table
+        List<Standard> allStandards = new ArrayList<>();
+        allStandards.addAll(allSections);
+//        createTimeTable(totalLoad, teachers, allStandards, configVariables);
+        createTimeTable(teachers, allStandards, configVariables);
     }
 
 
@@ -44,7 +54,7 @@ public class TimeTableGenerator
      * Currently it is assumed that the teachers who teach maths
      * can teach maths for all provided student group
      */
-    public void checkAllTeachersAvailable(Set<Teacher> teachers, Set<Subject> subjects)
+    void checkAllTeachersAvailable(Set<Teacher> teachers, Set<Subject> subjects)
     {
         for (Subject subject : subjects)
         {
@@ -63,7 +73,7 @@ public class TimeTableGenerator
         }
     }
 
-    public Map<Subject, Integer> calculateTotalLoad(Set<Subject> allSubjects)
+    Map<Subject, Integer> calculateTotalLoad(Set<Subject> allSubjects)
     {
         Map<Subject, Integer> totalLoad = new HashMap<>();
         for (Subject subject : allSubjects)
@@ -88,7 +98,7 @@ public class TimeTableGenerator
         return totalLoad;
     }
 
-    public void loadAssigningCheck(Map<Subject, Integer> totalLoad, ConfigVariables configVariables)
+    void loadAssigningCheck(Map<Subject, Integer> totalLoad, ConfigVariables configVariables)
     {
         for (Map.Entry<Subject, Integer> load : totalLoad.entrySet())
         {
@@ -111,6 +121,78 @@ public class TimeTableGenerator
                 }
 
         }
+    }
+
+    void createTimeTable(Set<Teacher> teachers, List<Standard> allSections, ConfigVariables configVariables)
+    {
+//        Map<Standard, Map<Integer, SubjectTeacher>> timeTable = new HashMap<>();
+        SubjectTeacher[][][] data = new SubjectTeacher[configVariables.getNoOfWorkWeek()][configVariables.getNoOfLecturesInADay()][allSections.size()];
+
+        //outer loop for all work week (Monday to Saturday)
+        for (int day = 0; day < configVariables.getNoOfWorkWeek(); day++)
+        {
+            log("Day:" + day);
+
+            //inner loop for lecture no. (1st lecture to 8th lecture)
+            for (int lecture = 0; lecture < configVariables.getNoOfLecturesInADay(); lecture++)
+            {
+                log("\tLecture no:" + lecture);
+
+                //create list of teachers from set
+                List<Teacher> tempTeachers = new ArrayList<>();
+                tempTeachers.addAll(teachers);
+
+                //create empty list of assigned teachers
+                List<Teacher> assignedTeachers = new ArrayList<>();
+
+                //get free and assigned teachers
+                Map<Boolean, List<Teacher>> allTeachers = getAllFreeTeachers(tempTeachers, assignedTeachers);
+
+                //inner inner loop for all classes (6thA to 10thC)
+                for (int sectionIndex = 0; sectionIndex < allSections.size(); sectionIndex++)
+                {
+                    Standard standard = allSections.get(sectionIndex);
+                    log("\t\tFor " + standard.getStandard() + " " + standard.getSection());
+
+                    //get all free teachers from allTeachers
+                    List<Teacher> freeTeachers = allTeachers.get(false);
+
+
+                    Random random = new Random();
+                    //todo later get teacher based on subject it teaches and subject we need to fill
+                    Teacher selectedTeacher = freeTeachers.get(random.nextInt(freeTeachers.size()));
+                    assignedTeachers.add(selectedTeacher);
+                    allTeachers = getAllFreeTeachers(tempTeachers, assignedTeachers);
+
+                    SubjectTeacher dataItem;
+                    if (selectedTeacher.getSubjects().size() == 1)
+                    {
+                        dataItem = new SubjectTeacher(selectedTeacher.getSubjects().iterator().next(), selectedTeacher);
+                    } else
+                    {
+                        dataItem = new SubjectTeacher(null, null);
+                    }
+                    log("\t\t\t " + dataItem);
+                    data[day][lecture][sectionIndex] = dataItem;
+                }
+            }
+        }
+        log(Arrays.deepToString(data));
+    }
+
+    Map<Boolean, List<Teacher>> getAllFreeTeachers(List<Teacher> allTeachers, List<Teacher> assignedTeachers)
+    {
+        Map<Boolean, List<Teacher>> data = new HashMap<>();
+
+        List<Teacher> unAssignedTeachers = new ArrayList<>();
+        for (Teacher teacher : allTeachers)
+            if (!assignedTeachers.contains(teacher))
+                unAssignedTeachers.add(teacher);
+
+        data.put(true, assignedTeachers);
+        data.put(false, unAssignedTeachers);
+
+        return data;
     }
 
     private void log(String msg)

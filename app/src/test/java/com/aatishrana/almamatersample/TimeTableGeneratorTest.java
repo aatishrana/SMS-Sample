@@ -3,15 +3,16 @@ package com.aatishrana.almamatersample;
 import com.aatishrana.almamatersample.data.MasterDataRepository;
 import com.aatishrana.almamatersample.data.MasterDataRepositoryTest;
 import com.aatishrana.almamatersample.pojo.ConfigVariables;
+import com.aatishrana.almamatersample.pojo.Standard;
 import com.aatishrana.almamatersample.pojo.subject.Subject;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -21,7 +22,6 @@ import static junit.framework.Assert.assertEquals;
 public class TimeTableGeneratorTest
 {
     private MasterDataRepository repository;
-    private Map<Subject, Integer> load;
 
     @Before
     public void setUp() throws Exception
@@ -59,11 +59,11 @@ public class TimeTableGeneratorTest
         Subject english = repository.getSubjectWithId(104);
         Subject hindi = repository.getSubjectWithId(105);
 
-        load = new HashMap<>();
+        Map<Subject, Integer> load = new HashMap<>();
         load.put(math, 74);
         load.put(science, 72);
         load.put(socialScience, 72);
-        load.put(english, 74);
+        load.put(english, 72);
         load.put(hindi, 60);
 
         ConfigVariables configVariables = new ConfigVariables();
@@ -73,4 +73,12 @@ public class TimeTableGeneratorTest
         generator.loadAssigningCheck(load, configVariables);
     }
 
+    @Test
+    public void createTimeTable()
+    {
+        TimeTableGenerator generator = new TimeTableGenerator(repository);
+        List<Standard> allStandards = new ArrayList<>();
+        allStandards.addAll(repository.getAllClasses());
+        generator.createTimeTable(repository.getAllTeachers(), allStandards, new ConfigVariables());
+    }
 }
