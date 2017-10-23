@@ -69,12 +69,14 @@ public class Teacher
     @Override
     public String toString()
     {
-        return "Teacher{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", subjects=" + primarySubjects +
-                ", secondary subjects=" + secondarySubjects +
-                '}';
+//        return "Teacher{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", subjects=" + primarySubjects +
+//                ", secondary subjects=" + secondarySubjects +
+//                '}';
+
+        return "Teacher{" + name + '}';
     }
 
     @Override

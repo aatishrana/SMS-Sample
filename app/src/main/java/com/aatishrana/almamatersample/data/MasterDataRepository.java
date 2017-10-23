@@ -5,7 +5,9 @@ import com.aatishrana.almamatersample.pojo.Standard;
 import com.aatishrana.almamatersample.pojo.Teacher;
 import com.aatishrana.almamatersample.pojo.subject.Subject;
 
+import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Created by Aatish on 10/17/2017.
@@ -40,5 +42,9 @@ public interface MasterDataRepository
 
     Set<Norms> getNormOfSubject(Subject subject);
 
-    Set<Norms> getAllNormsOfStandard(int standard_id);
+    Set<Norms> getAllNormsOfStandard(int standard);
+
+    Norms getNormOfStandardOfSubject(int standard, Subject subject);
+
+    Map<Subject, Stack<Integer>> getAllNormsOfStandardInStack(int standard);
 }

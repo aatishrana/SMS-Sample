@@ -10,8 +10,11 @@ import com.aatishrana.almamatersample.pojo.subject.Science;
 import com.aatishrana.almamatersample.pojo.subject.SocialScience;
 import com.aatishrana.almamatersample.pojo.subject.Subject;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Created by Aatish on 10/17/2017.
@@ -270,5 +273,36 @@ public class MasterDataRepositoryTest implements MasterDataRepository
             if (norms.getStandard() == standard)
                 normsSet.add(norms);
         return normsSet;
+    }
+
+    @Override
+    public Norms getNormOfStandardOfSubject(int standard, Subject subject)
+    {
+        for (Norms norms : allNorms)
+            if (norms.getStandard() == standard && norms.getSubject() == subject)
+                return norms;
+        return null;
+    }
+
+    @Override
+    public Map<Subject, Stack<Integer>> getAllNormsOfStandardInStack(int standard)
+    {
+        Map<Subject, Stack<Integer>> data = new HashMap<>();
+        for (Norms norms : allNorms)
+            if (norms.getStandard() == standard)
+            {
+                if (!data.containsKey(norms.getSubject()))
+                {
+                    Stack<Integer> integerStack = new Stack<>();
+                    for (int i = 0; i < norms.getNoOfLectures(); i++)
+                        integerStack.push(1);
+                    data.put(norms.getSubject(), integerStack);
+                } else
+                {
+                    for (int i = 0; i < norms.getNoOfLectures(); i++)
+                        data.get(norms.getSubject()).push(1);
+                }
+            }
+        return data;
     }
 }
