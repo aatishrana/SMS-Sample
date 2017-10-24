@@ -177,7 +177,9 @@ public class MasterDataRepositoryTest implements MasterDataRepository
     @Override
     public Set<Subject> getAllSubjects()
     {
-        return allSubjects;
+        Set<Subject> newSet = new HashSet<>();
+        newSet.addAll(allSubjects);
+        return newSet;
     }
 
     @Override

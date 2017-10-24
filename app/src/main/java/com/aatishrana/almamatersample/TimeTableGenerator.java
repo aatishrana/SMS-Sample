@@ -46,7 +46,7 @@ public class TimeTableGenerator
         //start creating time table
         List<Standard> allStandards = new ArrayList<>();
         allStandards.addAll(allSections);
-        createTimeTable(teachers, allStandards, configVariables);
+        SubjectTeacher[][][] timetable = createTimeTable(teachers, allStandards, configVariables);
     }
 
 
@@ -123,78 +123,8 @@ public class TimeTableGenerator
         }
     }
 
-//    void createTimeTable(Set<Teacher> teachers, List<Standard> allSections, ConfigVariables configVariables)
-//    {
-//        //create variables
-//        SubjectTeacher[][][] data = new SubjectTeacher[configVariables.getNoOfWorkWeek()][configVariables.getNoOfLecturesInADay()][allSections.size()];
-//
-//        //key is standard id(unique to every class) value is a map with keys(subjects) and its values as stack
-//        //of lectures left to be full filled
-//        Map<Integer, Map<Subject, Stack<Integer>>> normsSets = new HashMap<>();
-//
-//        //key is standard id value is a map with keys(subjects) and its values(teacher) to signify which
-//        //teacher is assigned to a class for a particular subject
-//        Map<Integer, Map<Subject, Teacher>> teachersSets = new HashMap<>();
-//        for (Standard standard : allSections)
-//        {
-//            normsSets.put(standard.getId(), repository.getAllNormsOfStandardInStack(standard.getStandard()));
-//
-//            //todo does all subjects should be included?
-//            Map<Subject, Teacher> mst = new HashMap<>();
-//            for (Subject subject : repository.getAllSubjects())
-//                mst.put(subject, null);
-//            teachersSets.put(standard.getId(), mst);
-//        }
-//
-//
-//        //outer loop for all work week (Monday to Saturday)
-//        for (int day = 0; day < configVariables.getNoOfWorkWeek(); day++)
-//        {
-//            log("Day:" + day);
-//
-//            //inner loop for lecture no. (1st lecture to 8th lecture)
-//            for (int lecture = 0; lecture < configVariables.getNoOfLecturesInADay(); lecture++)
-//            {
-//                log("\tLecture no:" + lecture);
-//
-//                //create list of teachers from set
-//                List<Teacher> teachersList = new ArrayList<>();
-//                teachersList.addAll(teachers);
-//
-//                //create empty list of assigned teachers
-//                List<Teacher> assignedTeachers = new ArrayList<>();
-//
-//                //get free and assigned teachers
-//                Map<Boolean, List<Teacher>> allTeachers = getAllFreeTeachers(teachersList, assignedTeachers);
-//
-//                //inner inner loop for all classes (6thA to 10thC)
-//                for (int sectionIndex = 0; sectionIndex < allSections.size(); sectionIndex++)
-//                {
-//                    Standard standard = allSections.get(sectionIndex);
-//                    log("\t\tFor " + standard.getStandard() + " " + standard.getSection());
-//
-//                    //get all free teachers from allTeachers
-//                    List<Teacher> freeTeachers = allTeachers.get(false);
-//
-//                    //check previous lectures of the day
-//                    Set<Subject> unTaughtSubjects = getUnTaughtSubjectsOfTheDay(data, day, sectionIndex, configVariables.getNoOfLecturesInADay());
-//
-//                    //todo point A
-//                    //depending on previous lectures, pick unassigned subject
-//                    Subject pickedSubject = pickASubject(unTaughtSubjects);
-//                    if (pickedSubject == null)
-//                        continue;
-//
-//                    mySpecialFunc(pickedSubject, day, lecture, sectionIndex, data, teachersSets, normsSets, freeTeachers, standard, unTaughtSubjects);
-//
-//                    log("\t\t\t\t" + data[day][lecture][sectionIndex]);
-//                }
-//            }
-//        }
-//    }
 
-
-    void createTimeTable(Set<Teacher> teachers, List<Standard> allSections, ConfigVariables config)
+    SubjectTeacher[][][] createTimeTable(Set<Teacher> teachers, List<Standard> allSections, ConfigVariables config)
     {
         //create variables
         SubjectTeacher[][][] data = new SubjectTeacher[config.getNoOfWorkWeek()][config.getNoOfLecturesInADay()][allSections.size()];
@@ -219,92 +149,95 @@ public class TimeTableGenerator
 
         for (int day = 0; day < config.getNoOfWorkWeek(); day++)
         {
-            log("Day:" + day);
+//            log("Day:" + day);
             for (int lecture = 0; lecture < config.getNoOfLecturesInADay(); lecture++)
             {
-                log("\tlecture:" + lecture);
+//                log("\tlecture:" + lecture);
                 List<Teacher> freeTeachers = new ArrayList<>();
                 freeTeachers.addAll(teachers);
 
                 for (int sectionIndex = 0; sectionIndex < allSections.size(); sectionIndex++)
                 {
                     Standard standard = allSections.get(sectionIndex);
-                    log("\t\tsectionIndex:" + sectionIndex);
+//                    log("\t\tsectionIndex:" + sectionIndex);
                     Set<Subject> unTaughtSubjects = getUnTaughtSubjectsOfTheDay(data, day, sectionIndex, config.getNoOfLecturesInADay());
-                    log("\t\tunTaughtSubjects:" + unTaughtSubjects);
+//                    log("\t\tunTaughtSubjects:" + unTaughtSubjects);
                     for (Subject pickedSubject : unTaughtSubjects)
                     {
-                        log("\t\t\tpickedSubject:" + pickedSubject.getName());
+//                        log("\t\t\tpickedSubject:" + pickedSubject.getName());
 
                         //check if a teacher is assigned for selected subject
                         Teacher assignedTeacher = teachersSets.get(standard.getId()).get(pickedSubject);
                         if (assignedTeacher == null)
                         {
                             //pick a new teacher from free teachers
-                            log("\t\t\tfreeTeachers:" + freeTeachers.size());
+//                            log("\t\t\tfreeTeachers:" + freeTeachers.size());
                             Teacher selectedTeacher = pickATeacher(freeTeachers, pickedSubject);
                             if (selectedTeacher != null)
                             {
-                                log("\t\t\tselectedTeacher:" + selectedTeacher);
+//                                log("\t\t\tselectedTeacher:" + selectedTeacher);
                                 //if selectedTeacher found then add subject teacher to data array and pop that subject's load from stack
                                 data[day][lecture][sectionIndex] = new SubjectTeacher(pickedSubject, selectedTeacher);
                                 freeTeachers.remove(selectedTeacher);
+                                teachersSets.get(standard.getId()).put(pickedSubject, selectedTeacher);
                                 normsSets.get(standard.getId()).get(pickedSubject).pop();
                                 break;
-                            } else
-                                log("No new teacher found to assign");
+                            }
+//                            else
+//                                log("No new teacher found to assign");
                         } else
                         {
                             if (freeTeachers.contains(assignedTeacher))
                             {
-                                log("\t\t\tselectedTeacher:" + assignedTeacher);
+//                                log("\t\t\tselectedTeacher:" + assignedTeacher);
                                 //if free then add subject teacher to data array and pop that subject's load from stack
                                 data[day][lecture][sectionIndex] = new SubjectTeacher(pickedSubject, assignedTeacher);
                                 freeTeachers.remove(assignedTeacher);
                                 normsSets.get(standard.getId()).get(pickedSubject).pop();
                                 break;
-                            } else
-                                log("Assigned teacher is not free");
+                            }
+//                            else
+//                                log("Assigned teacher is not free");
                         }
 
                     }
-                    log("\t\t\t\t\t\t" + data[day][lecture][sectionIndex]);
+//                    log("\t\t\t\t\t\t" + data[day][lecture][sectionIndex]);
                 }
             }
         }
-    }
-
-    private void mySpecialFunc(Subject pickedSubject, int day, int lecture, int sectionIndex, SubjectTeacher[][][] data, Map<Integer, Map<Subject, Teacher>> teachersSets, Map<Integer, Map<Subject, Stack<Integer>>> normsSets, List<Teacher> freeTeachers, Standard standard, Set<Subject> unTaughtSubjects)
-    {
-
-        //check if teacher is assigned for selected subject
-        Teacher assignedTeacher = teachersSets.get(standard.getId()).get(pickedSubject);
-        if (assignedTeacher != null)
+        log(" ");
+        log(" ");
+        log(" ");
+        log(" ");
+        log(" ");
+        log(" ");
+        //printing proper time table
+        for (int sectionIndex = 0; sectionIndex < allSections.size(); sectionIndex++)
         {
-            //if teacher is assigned, check if that teacher is free
-            if (freeTeachers.contains(assignedTeacher))
+            Standard standard = allSections.get(sectionIndex);
+            log("Class:" + standard.getName());
+
+            for (int day = 0; day < config.getNoOfWorkWeek(); day++)
             {
-                //if free then add subject teacher to data array and pop that subject's load from stack
-                data[day][lecture][sectionIndex] = new SubjectTeacher(pickedSubject, assignedTeacher);
-                normsSets.get(standard.getId()).get(pickedSubject).pop();
-            } else
-            {
-                //if not free then pick another subject and repeat process till all subjects ran out
-                //todo recursion from point A
-                Subject pickedAnotherSubject = pickASubject(unTaughtSubjects);
-                mySpecialFunc(pickedAnotherSubject, day, lecture, sectionIndex, data, teachersSets, normsSets, freeTeachers, standard, unTaughtSubjects);
+                for (int lecture = 0; lecture < config.getNoOfLecturesInADay(); lecture++)
+                {
+                    SubjectTeacher item = data[day][lecture][sectionIndex];
+                    if (item != null)
+                        System.out.printf("\t%30s", item.getSubject().getName() + "/" + item.getTeacher().getName());
+                    else
+                        System.out.printf("\t%30s", " - ");
+                }
+                System.out.println(" ");
             }
-        } else
-        {
-            //if teacher is not assigned pick one who can teach that subject and is free
-            Teacher pickedTeacher = pickATeacher(freeTeachers, pickedSubject);
-            if (pickedTeacher == null)
-                return;
 
-            data[day][lecture][sectionIndex] = new SubjectTeacher(pickedSubject, pickedTeacher);
-            normsSets.get(standard.getId()).get(pickedSubject).pop();
+            log(" ");
+            log(" ");
         }
+
+
+        return data;
     }
+
 
     private Teacher pickATeacher(List<Teacher> freeTeachers, Subject pickedSubject)
     {
@@ -318,7 +251,7 @@ public class TimeTableGenerator
 
         if (pickAbleTeachers.isEmpty())
         {
-            log("Not enough free teachers!!");
+//            log("Not enough free teachers!!");
             return null;
         }
 
@@ -353,20 +286,6 @@ public class TimeTableGenerator
         return iter.next();
     }
 
-    Map<Boolean, List<Teacher>> getAllFreeTeachers(List<Teacher> allTeachers, List<Teacher> assignedTeachers)
-    {
-        Map<Boolean, List<Teacher>> data = new HashMap<>();
-
-        List<Teacher> unAssignedTeachers = new ArrayList<>();
-        for (Teacher teacher : allTeachers)
-            if (!assignedTeachers.contains(teacher))
-                unAssignedTeachers.add(teacher);
-
-        data.put(true, assignedTeachers);
-        data.put(false, unAssignedTeachers);
-
-        return data;
-    }
 
     /**
      * This method takes 3d array of subjectTeacher as input and finds all the subjects
