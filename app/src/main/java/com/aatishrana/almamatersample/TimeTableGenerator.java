@@ -9,6 +9,8 @@ import com.aatishrana.almamatersample.pojo.subject.Subject;
 import com.aatishrana.almamatersample.pojo.Teacher;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,13 +48,27 @@ public class TimeTableGenerator
         //start creating time table
         List<Standard> allStandards = new ArrayList<>();
         allStandards.addAll(allSections);
+        Collections.sort(
+                allStandards, new Comparator<Standard>()
+                {
+                    @Override
+                    public int compare(Standard o1, Standard o2)
+                    {
+                        if (o1.getId() > o2.getId())
+                            return -1;
+                        else if (o1.getId() < o2.getId())
+                            return 1;
+                        return 0;
+                    }
+                });
+        log(allStandards.toString());
         SubjectTeacher[][][] timetable = createTimeTable(teachers, allStandards, configVariables);
     }
 
 
     /**
      * Currently it is assumed that the teachers who teach maths
-     * can teach maths for all provided student group
+     * can teach maths for all provided classes
      */
     void checkAllTeachersAvailable(Set<Teacher> teachers, Set<Subject> subjects)
     {
@@ -64,7 +80,6 @@ public class TimeTableGenerator
                 if (teacher.getSubjects().contains(subject))
                 {
                     found = true;
-                    log(subject.getName() + " Teacher Found");
                     break;
                 }
             }
@@ -106,9 +121,6 @@ public class TimeTableGenerator
             Set<Teacher> teachers = repository.getAllTeachersTeachingSubject(load.getKey().getId());
             int totalMaxLoadOfTeachersForOneSubject = totalNoOfLectures * teachers.size();
 
-            System.out.print(load.getKey().getName() + " Load(" + load.getValue() + ") / Max(");
-            System.out.println(totalMaxLoadOfTeachersForOneSubject + ")");
-
             if (load.getValue() > totalMaxLoadOfTeachersForOneSubject)
                 if (!configVariables.isDelegateToNonSubjectTeacher())
                     throw new RuntimeException(load.getKey() + " load is greater then available teachers. Load = "
@@ -137,6 +149,7 @@ public class TimeTableGenerator
         Map<Integer, Map<Subject, Teacher>> teachersSets = new HashMap<>();
         for (Standard standard : allSections)
         {
+            // put norms of particular standard as a map with stack of ones which will be popped later on.
             normsSets.put(standard.getId(), repository.getAllNormsOfStandardInStack(standard.getStandard()));
 
             //todo does all subjects should be included?
@@ -208,6 +221,14 @@ public class TimeTableGenerator
         log(" ");
         log(" ");
         log(" ");
+        for (Map.Entry<Integer, Map<Subject, Stack<Integer>>> entry : normsSets.entrySet())
+        {
+            log("\t" + entry.getKey());
+            for (Map.Entry<Subject, Stack<Integer>> entry1 : entry.getValue().entrySet())
+            {
+                log("\t\t" + entry1.getKey() + " " + entry1.getValue().toString());
+            }
+        }
         log(" ");
         log(" ");
         log(" ");
@@ -215,7 +236,7 @@ public class TimeTableGenerator
         for (int sectionIndex = 0; sectionIndex < allSections.size(); sectionIndex++)
         {
             Standard standard = allSections.get(sectionIndex);
-            log("Class:" + standard.getName());
+            log("Class:" + standard.getName() + "(" + standard.getId() + ")");
 
             for (int day = 0; day < config.getNoOfWorkWeek(); day++)
             {

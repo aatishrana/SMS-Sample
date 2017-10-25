@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -86,6 +88,19 @@ public class TimeTableGeneratorTest
         TimeTableGenerator generator = new TimeTableGenerator(repository);
         List<Standard> allStandards = new ArrayList<>();
         allStandards.addAll(repository.getAllClasses());
+        Collections.sort(
+                allStandards, new Comparator<Standard>()
+                {
+                    @Override
+                    public int compare(Standard o1, Standard o2)
+                    {
+                        if (o1.getId() > o2.getId())
+                            return -1;
+                        else if (o1.getId() < o2.getId())
+                            return 1;
+                        return 0;
+                    }
+                });
         generator.createTimeTable(repository.getAllTeachers(), allStandards, new ConfigVariables());
     }
 
