@@ -1,14 +1,11 @@
 package com.aatishrana.almamatersample;
 
-import com.aatishrana.almamatersample.data.DataSampleOne;
 import com.aatishrana.almamatersample.data.DataSampleTwo;
 import com.aatishrana.almamatersample.data.MasterDataRepository;
 import com.aatishrana.almamatersample.data.MasterDataRepositoryTest;
 import com.aatishrana.almamatersample.pojo.ConfigVariables;
 import com.aatishrana.almamatersample.pojo.Standard;
 import com.aatishrana.almamatersample.pojo.SubjectTeacher;
-import com.aatishrana.almamatersample.pojo.Teacher;
-import com.aatishrana.almamatersample.pojo.subject.Hindi;
 import com.aatishrana.almamatersample.pojo.subject.Math;
 import com.aatishrana.almamatersample.pojo.subject.Science;
 import com.aatishrana.almamatersample.pojo.subject.Subject;
@@ -18,7 +15,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +47,7 @@ public class TimeTableGeneratorTest
     public void calculateTotalLoad() throws Exception
     {
         TimeTableGenerator generator = new TimeTableGenerator(repository);
-        Map<Subject, Integer> obj = generator.calculateTotalLoad(repository.getAllSubjects());
+        Map<Subject, Integer> obj = generator.calculateTotalLoad(repository.getAllSubjects(), 6, 10);
         Subject science = repository.getSubjectWithId(102);
         Subject hindi = repository.getSubjectWithId(105);
 
@@ -80,7 +76,7 @@ public class TimeTableGeneratorTest
         configVariables.setDelegateToNonSubjectTeacher(false);
 
         TimeTableGenerator generator = new TimeTableGenerator(repository);
-        generator.loadAssigningCheck(load, configVariables);
+        generator.loadAssigningCheckTeachers(load, configVariables);
     }
 
     @Test
@@ -92,6 +88,13 @@ public class TimeTableGeneratorTest
         generator.createTimeTable(repository.getAllTeachers(), allStandards, new ConfigVariables());
     }
 
+
+    @Test
+    public void makeYearlyTimeTable()
+    {
+        TimeTableGenerator generator = new TimeTableGenerator(repository);
+        generator.makeYearlyTimeTable(repository.getAllTeachers(), repository.getAllClasses(), repository.getAllSubjects(), new ConfigVariables());
+    }
 
     @Test
     public void isSubjectNormsFullFilled()
@@ -152,7 +155,7 @@ public class TimeTableGeneratorTest
         sampleData[3][2][0] = new SubjectTeacher(english, repository.getTeacherWithId(206));
         sampleData[3][3][0] = new SubjectTeacher(science, repository.getTeacherWithId(201));
 
-        Set<Subject> obj = generator.getUnTaughtSubjectsOfTheDay(sampleData, 2, 0, lecturesInADay);
+        List<Subject> obj = generator.getUnTaughtSubjectsOfTheDay(sampleData, 2, 0, lecturesInADay);
         assertEquals(3, obj.size());
 
 

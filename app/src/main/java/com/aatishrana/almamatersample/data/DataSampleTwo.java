@@ -63,25 +63,24 @@ public class DataSampleTwo implements DataSample
         // all norms for different subjects, sample db
         allNorms = new HashSet<>();
 
-        int i = 3;
 
         //for science
-        Norms norm_science6th = new Norms(401, 6, science, i);
-        Norms norm_science7th = new Norms(402, 7, science, i);
+        Norms norm_science6th = new Norms(401, 6, science, 13);
+        Norms norm_science7th = new Norms(402, 7, science, 7);
         allNorms.add(norm_science6th);
         allNorms.add(norm_science7th);
 
 
         //for social science
-        Norms norm_socialScience6th = new Norms(406, 6, socialScience, i);
-        Norms norm_socialScience7th = new Norms(407, 7, socialScience, i);
+        Norms norm_socialScience6th = new Norms(406, 6, socialScience, 14);
+        Norms norm_socialScience7th = new Norms(407, 7, socialScience, 10);
         allNorms.add(norm_socialScience6th);
         allNorms.add(norm_socialScience7th);
 
 
         //for maths
-        Norms norm_math6th = new Norms(411, 6, math, i);
-        Norms norm_math7th = new Norms(412, 7, math, i);
+        Norms norm_math6th = new Norms(411, 6, math, 9);
+        Norms norm_math7th = new Norms(412, 7, math, 19);
         allNorms.add(norm_math6th);
         allNorms.add(norm_math7th);
     }
