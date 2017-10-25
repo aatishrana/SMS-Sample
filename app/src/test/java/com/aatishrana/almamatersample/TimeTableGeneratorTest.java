@@ -1,5 +1,7 @@
 package com.aatishrana.almamatersample;
 
+import com.aatishrana.almamatersample.data.DataSampleOne;
+import com.aatishrana.almamatersample.data.DataSampleTwo;
 import com.aatishrana.almamatersample.data.MasterDataRepository;
 import com.aatishrana.almamatersample.data.MasterDataRepositoryTest;
 import com.aatishrana.almamatersample.pojo.ConfigVariables;
@@ -20,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -33,7 +36,7 @@ public class TimeTableGeneratorTest
     @Before
     public void setUp() throws Exception
     {
-        repository = new MasterDataRepositoryTest();
+        repository = new MasterDataRepositoryTest(new DataSampleTwo());
     }
 
 
@@ -89,29 +92,26 @@ public class TimeTableGeneratorTest
         generator.createTimeTable(repository.getAllTeachers(), allStandards, new ConfigVariables());
     }
 
-    @Test
-    public void createTimeTable2()
-    {
-        TimeTableGenerator generator = new TimeTableGenerator(repository);
 
+    @Test
+    public void isSubjectNormsFullFilled()
+    {
         Subject math = new Math(201);
         Subject science = new Science(202);
-        Subject hindi = new Hindi(203);
 
-        Set<Teacher> allTeachers = new HashSet<>();
-        allTeachers.add(new Teacher(101, "Teacher 101", math));
-        allTeachers.add(new Teacher(102, "Teacher 102", science));
-        allTeachers.add(new Teacher(103, "Teacher 103", hindi));
+        Stack<Integer> stack1 = new Stack<>();
+        stack1.push(1);
+        stack1.push(1);
 
-        List<Standard> allStandards = new ArrayList<>();
-        allStandards.add(new Standard(301, "10th A", 10, 'A', 35));
-        allStandards.add(new Standard(302, "10th B", 10, 'B', 35));
+        Map<Subject, Stack<Integer>> data1 = new HashMap<>();
+        data1.put(math, stack1);
 
-        ConfigVariables config = new ConfigVariables();
-        config.setNoOfWorkWeek(2);
-        config.setNoOfLecturesInADay(3);
-
-        generator.createTimeTable(allTeachers, allStandards, config);
+        TimeTableGenerator generator = new TimeTableGenerator(repository);
+        assertEquals(false, generator.isSubjectNormsFullFilled(math, data1));
+        stack1.pop();
+        assertEquals(false, generator.isSubjectNormsFullFilled(science, data1));
+        stack1.pop();
+        assertEquals(true, generator.isSubjectNormsFullFilled(math, data1));
     }
 
     @Test
@@ -131,29 +131,29 @@ public class TimeTableGeneratorTest
 
         //6thA
         //mon : math,science,hindi,english
-        sampleData[0][0][0]=new SubjectTeacher(math,repository.getTeacherWithId(203));
-        sampleData[0][1][0]=new SubjectTeacher(science,repository.getTeacherWithId(201));
-        sampleData[0][2][0]=new SubjectTeacher(hindi,repository.getTeacherWithId(212));
-        sampleData[0][3][0]=new SubjectTeacher(english,repository.getTeacherWithId(206));
+        sampleData[0][0][0] = new SubjectTeacher(math, repository.getTeacherWithId(203));
+        sampleData[0][1][0] = new SubjectTeacher(science, repository.getTeacherWithId(201));
+        sampleData[0][2][0] = new SubjectTeacher(hindi, repository.getTeacherWithId(212));
+        sampleData[0][3][0] = new SubjectTeacher(english, repository.getTeacherWithId(206));
 
         //tue : science,hindi,math,english
-        sampleData[1][0][0]=new SubjectTeacher(science,repository.getTeacherWithId(201));
-        sampleData[1][1][0]=new SubjectTeacher(hindi,repository.getTeacherWithId(212));
-        sampleData[1][2][0]=new SubjectTeacher(math,repository.getTeacherWithId(203));
-        sampleData[1][3][0]=new SubjectTeacher(english,repository.getTeacherWithId(206));
+        sampleData[1][0][0] = new SubjectTeacher(science, repository.getTeacherWithId(201));
+        sampleData[1][1][0] = new SubjectTeacher(hindi, repository.getTeacherWithId(212));
+        sampleData[1][2][0] = new SubjectTeacher(math, repository.getTeacherWithId(203));
+        sampleData[1][3][0] = new SubjectTeacher(english, repository.getTeacherWithId(206));
 
         //wed : math,english
-        sampleData[2][0][0]=new SubjectTeacher(math,repository.getTeacherWithId(203));
-        sampleData[2][1][0]=new SubjectTeacher(english,repository.getTeacherWithId(206));
+        sampleData[2][0][0] = new SubjectTeacher(math, repository.getTeacherWithId(203));
+        sampleData[2][1][0] = new SubjectTeacher(english, repository.getTeacherWithId(206));
 
         //thu : hindi,math,english,science
-        sampleData[3][0][0]=new SubjectTeacher(hindi,repository.getTeacherWithId(212));
-        sampleData[3][1][0]=new SubjectTeacher(math,repository.getTeacherWithId(203));
-        sampleData[3][2][0]=new SubjectTeacher(english,repository.getTeacherWithId(206));
-        sampleData[3][3][0]=new SubjectTeacher(science,repository.getTeacherWithId(201));
+        sampleData[3][0][0] = new SubjectTeacher(hindi, repository.getTeacherWithId(212));
+        sampleData[3][1][0] = new SubjectTeacher(math, repository.getTeacherWithId(203));
+        sampleData[3][2][0] = new SubjectTeacher(english, repository.getTeacherWithId(206));
+        sampleData[3][3][0] = new SubjectTeacher(science, repository.getTeacherWithId(201));
 
         Set<Subject> obj = generator.getUnTaughtSubjectsOfTheDay(sampleData, 2, 0, lecturesInADay);
-        assertEquals(3,obj.size());
+        assertEquals(3, obj.size());
 
 
 //        sampleData[day][0][sectionIndex] = new SubjectTeacher(repository.getSubjectWithId(101), repository.getTeacherWithId(201));

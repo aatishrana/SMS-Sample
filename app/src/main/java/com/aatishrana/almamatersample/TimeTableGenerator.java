@@ -164,6 +164,11 @@ public class TimeTableGenerator
 //                    log("\t\tunTaughtSubjects:" + unTaughtSubjects);
                     for (Subject pickedSubject : unTaughtSubjects)
                     {
+
+                        //check if this subject's norms for the week are already done, if so then skip this subject
+                        if (isSubjectNormsFullFilled(pickedSubject, normsSets.get(standard.getId())))
+                            continue;
+
 //                        log("\t\t\tpickedSubject:" + pickedSubject.getName());
 
                         //check if a teacher is assigned for selected subject
@@ -180,7 +185,8 @@ public class TimeTableGenerator
                                 data[day][lecture][sectionIndex] = new SubjectTeacher(pickedSubject, selectedTeacher);
                                 freeTeachers.remove(selectedTeacher);
                                 teachersSets.get(standard.getId()).put(pickedSubject, selectedTeacher);
-                                normsSets.get(standard.getId()).get(pickedSubject).pop();
+                                if (!normsSets.get(standard.getId()).get(pickedSubject).isEmpty())
+                                    normsSets.get(standard.getId()).get(pickedSubject).pop();
                                 break;
                             }
 //                            else
@@ -193,7 +199,8 @@ public class TimeTableGenerator
                                 //if free then add subject teacher to data array and pop that subject's load from stack
                                 data[day][lecture][sectionIndex] = new SubjectTeacher(pickedSubject, assignedTeacher);
                                 freeTeachers.remove(assignedTeacher);
-                                normsSets.get(standard.getId()).get(pickedSubject).pop();
+                                if (!normsSets.get(standard.getId()).get(pickedSubject).isEmpty())
+                                    normsSets.get(standard.getId()).get(pickedSubject).pop();
                                 break;
                             }
 //                            else
@@ -238,6 +245,24 @@ public class TimeTableGenerator
         return data;
     }
 
+
+    public boolean isSubjectNormsFullFilled(Subject subject, Map<Subject, Stack<Integer>> data)
+    {
+        boolean returnValue;
+        if (subject != null && data != null)
+        {
+            Stack<Integer> stack = data.get(subject);
+            returnValue = stack != null && stack.size() <= 0;
+        } else
+            returnValue = false;
+
+
+//        if (returnValue)
+//            log("Norms full filled");
+
+
+        return returnValue;
+    }
 
     private Teacher pickATeacher(List<Teacher> freeTeachers, Subject pickedSubject)
     {
