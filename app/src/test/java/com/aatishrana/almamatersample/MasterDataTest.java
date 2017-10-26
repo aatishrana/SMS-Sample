@@ -1,5 +1,6 @@
 package com.aatishrana.almamatersample;
 
+import com.aatishrana.almamatersample.data.DataSampleOne;
 import com.aatishrana.almamatersample.data.MasterDataRepository;
 import com.aatishrana.almamatersample.data.MasterDataRepositoryTest;
 import com.aatishrana.almamatersample.pojo.Norms;
@@ -29,7 +30,7 @@ public class MasterDataTest
     @Before
     public void setUp() throws Exception
     {
-        repository = new MasterDataRepositoryTest();
+        repository = new MasterDataRepositoryTest(new DataSampleOne());
         english = repository.getSubjectWithId(104);
         math = repository.getSubjectWithId(101);
         hindi = repository.getSubjectWithId(105);
